@@ -5,7 +5,7 @@ DATABASE_FILE = "Budget_Tracker.db"
 ALLOWANCE = 24.5
 
 #Initializes the database with option of having a different allowance
-def initalize_database(allowance = ALLOWANCE):
+def initalize_database():
     connector = sqlite3.connect(DATABASE_FILE)
     cursor = connector.cursor()
 
@@ -20,36 +20,20 @@ def initalize_database(allowance = ALLOWANCE):
     );
     """)
 
-    #Create settings table to store allowance
+    #Create allowance table
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS settings (
-        id INTEGER PRIMARY KEY,
+    CREATE TABLE IF NOT EXISTS allowance (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date TEXT,
         allowance REAL
-    );
+    );               
     """)
-
-    #Insert allowance if it doesn't exist
-    cursor.execute("SELECT COUNT(*) FROM settings")
-    if (cursor.fetchone()[0] == 0):
-        cursor.execute("""
-        INSERT INTO settings (id, allowance)
-        VALUES (1, ?)
-        """, (allowance,))
-    #If it does exist, make sure it is the set allowance
-    else:
-        cursor.execute("SELECT allowance FROM settings WHERE id = 1")
-        if (cursor.fetchone()[0] != allowance):
-            cursor.execute("""
-            UPDATE settings
-            SET allowance = ?
-            WHERE id = 1;
-            """, (allowance,))
 
     connector.commit()
     connector.close()
 
 #Adds a transaction to the database
-def add_transaction(date, title, description, amount):
+def add_transaction(date, title, description, amount, allowance):
     connector = sqlite3.connect(DATABASE_FILE)
     cursor = connector.cursor()
 
@@ -57,6 +41,11 @@ def add_transaction(date, title, description, amount):
     INSERT INTO transactions (date, title, description, amount)
     VALUES (?, ?, ?, ?)
     """, (date, title, description, amount))
+
+    cursor.execute("""
+    INSERT INTO allowance (date, allowance)
+    VALUES (?, ?)
+    """, (date, allowance))
     
     connector.commit()
     connector.close()
@@ -91,27 +80,28 @@ def retrieve_all_transactions():
     for transaction in transactions:
         print(transaction)
 
-#Retrieves the allowance stored in settings
-def getAllowance():
-    sqliteConnection = sqlite3.connect(DATABASE_FILE)
-    cursor = sqliteConnection.cursor()
+#Retrieves the allowance on a specific date
+def getAllowanceOnDate(date):
+    connector = sqlite3.connect(DATABASE_FILE)
+    cursor = connector.cursor()
 
-    query = """
-    SELECT allowance FROM settings
-    WHERE id = 1
-    """
-    cursor.execute(query)
+    cursor.execute("""
+    SELECT allowance FROM allowance
+    WHERE date = ?
+    """, (date,))
 
     return cursor.fetchone()[0]
 
 #Tests various functions of the database
 def test():
-    initalize_database(24)
-    add_transaction("2025-1-12", "Panda Express", "Food", 12.46)
-    add_transaction("2025-1-13", "Panda Express", "Food", 12.42)
-    add_transaction("2025-1-14", "Panda Express", "Food", 8.43)
+    initalize_database()
+    add_transaction("2025-1-12", "Panda Express", "Food", 12.46, 20)
+    add_transaction("2025-1-13", "Panda Express", "Food", 12.42, 15)
+    add_transaction("2025-1-14", "Panda Express", "Food", 8.43, 12)
     retrieve_all_transactions()
-    print(getAllowance())
-    print(getBalanceOnDate("2025-1-12"))
+    print(f"allowance 1 {getAllowanceOnDate("2025-1-12")}")
+    print(f"allowance 2 {getAllowanceOnDate("2025-1-13")}")
+    print(f"allowance 3 {getAllowanceOnDate("2025-1-14")}")
+    print(f"Balance on 1-12 {getBalanceOnDate("2025-1-12")}")
 
 test()
