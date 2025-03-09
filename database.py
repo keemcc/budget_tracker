@@ -62,6 +62,11 @@ def getBalanceOnDate(date):
 
     return cursor.fetchone()[0]
 
+#Sets the database file path
+def setDatabaseFilePath(path):
+    global DATABASE_FILE
+    DATABASE_FILE = path
+
 ###Testing Functions###
 #Prints all transactions stored
 def retrieve_all_transactions():
@@ -92,6 +97,7 @@ def getAllowanceOnDate(date):
 
     return cursor.fetchone()[0]
 
+#Prints all transactions along with the allowance their date was given
 def printTransactionsWithAllowance():
     connector = sqlite3.connect(DATABASE_FILE)
     cursor = connector.cursor()
