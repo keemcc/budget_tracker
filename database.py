@@ -97,7 +97,10 @@ def getAllowanceOnDate(date):
     WHERE date = ?
     """, (date,))
 
-    return cursor.fetchone()[0]
+    result = cursor.fetchone()
+    if result:
+        return result[0]
+    return result
 
 #Prints all transactions along with the allowance their date was given
 def printTransactionsWithAllowance():
@@ -127,5 +130,6 @@ def test():
     print(f"allowance 2 {getAllowanceOnDate("2025-1-13")}")
     print(f"allowance 3 {getAllowanceOnDate("2025-1-14")}")
     print(f"Balance on 1-12 {getBalanceOnDate("2025-1-12")}")
+
 
 test()
