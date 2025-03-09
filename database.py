@@ -42,10 +42,12 @@ def add_transaction(date, title, description, amount, allowance):
     VALUES (?, ?, ?, ?)
     """, (date, title, description, amount))
 
-    cursor.execute("""
-    INSERT INTO allowance (date, allowance)
-    VALUES (?, ?)
-    """, (date, allowance))
+    cursor.execute("SELECT COUNT(*) FROM allowance WHERE date = ?", (date,))
+    if cursor.fetchone()[0] == 0:
+        cursor.execute("""
+        INSERT INTO allowance (date, allowance)
+        VALUES (?, ?)
+        """, (date, allowance))
     
     connector.commit()
     connector.close()
