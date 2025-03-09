@@ -92,6 +92,22 @@ def getAllowanceOnDate(date):
 
     return cursor.fetchone()[0]
 
+def printTransactionsWithAllowance():
+    connector = sqlite3.connect(DATABASE_FILE)
+    cursor = connector.cursor()
+
+    cursor.execute("""
+    SELECT t.id, t.date, t.title, t.description, t.amount, allowance.allowance FROM transactions AS t
+    LEFT JOIN allowance ON t.date = allowance.date
+    ORDER BY t.date ASC
+    """)
+
+    transactions = cursor.fetchall()
+    connector.close()
+
+    for transaction in transactions:
+        print(transaction)
+
 #Tests various functions of the database
 def test():
     initalize_database()
