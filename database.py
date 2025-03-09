@@ -53,7 +53,7 @@ def add_transaction(date, title, description, amount, allowance):
     connector.close()
 
 #Retrieves the total amount spent on a certain date
-def getBalanceOnDate(date):
+def get_balance_on_date(date):
     connector = sqlite3.connect(DATABASE_FILE)
     cursor = connector.cursor()
     cursor.execute("""
@@ -65,7 +65,7 @@ def getBalanceOnDate(date):
     return cursor.fetchone()[0]
 
 #Sets the database file path
-def setDatabaseFilePath(path):
+def set_database_file_path(path):
     global DATABASE_FILE
     DATABASE_FILE = path
 
@@ -88,7 +88,7 @@ def retrieve_all_transactions():
         print(transaction)
 
 #Retrieves the allowance on a specific date
-def getAllowanceOnDate(date):
+def get_allowance_on_date(date):
     connector = sqlite3.connect(DATABASE_FILE)
     cursor = connector.cursor()
 
@@ -103,7 +103,7 @@ def getAllowanceOnDate(date):
     return result
 
 #Prints all transactions along with the allowance their date was given
-def printTransactionsWithAllowance():
+def print_transactions_with_allowance():
     connector = sqlite3.connect(DATABASE_FILE)
     cursor = connector.cursor()
 
@@ -119,17 +119,22 @@ def printTransactionsWithAllowance():
     for transaction in transactions:
         print(transaction)
 
+def add_filler_data():
+    add_transaction("2025-01-13", "Panda Express", "Food", 12.42, 20.00)
+    add_transaction("2025-01-14", "Uber Ride", "Transportation", 8.50, 20.00)
+    add_transaction("2025-01-14", "Starbucks", "Coffee", 5.75, 20.00)
+    add_transaction("2025-01-15", "Amazon", "Books", 25.99, 20.00)
+    add_transaction("2025-01-16", "Walmart", "Groceries", 30.20, 20.00)
+    add_transaction("2025-01-17", "Movie Tickets", "Entertainment", 15.00, 20.00)
+    add_transaction("2025-01-18", "McDonald's", "Food", 7.30, 20.00)
+    add_transaction("2025-01-19", "Target", "Clothing", 40.15, 20.00)
+    add_transaction("2025-01-20", "CVS", "Medicine", 10.95, 20.00)
+    add_transaction("2025-01-21", "Whole Foods", "Groceries", 50.00, 20.00)
+
 #Tests various functions of the database
 def test():
     initalize_database()
-    add_transaction("2025-1-12", "Panda Express", "Food", 12.46, 20)
-    add_transaction("2025-1-13", "Panda Express", "Food", 12.42, 15)
-    add_transaction("2025-1-14", "Panda Express", "Food", 8.43, 12)
-    printTransactionsWithAllowance()
-    print(f"allowance 1 {getAllowanceOnDate("2025-1-12")}")
-    print(f"allowance 2 {getAllowanceOnDate("2025-1-13")}")
-    print(f"allowance 3 {getAllowanceOnDate("2025-1-14")}")
-    print(f"Balance on 1-12 {getBalanceOnDate("2025-1-12")}")
+    print_transactions_with_allowance()
 
 
 test()
