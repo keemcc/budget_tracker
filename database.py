@@ -114,7 +114,7 @@ def test():
     add_transaction("2025-1-12", "Panda Express", "Food", 12.46, 20)
     add_transaction("2025-1-13", "Panda Express", "Food", 12.42, 15)
     add_transaction("2025-1-14", "Panda Express", "Food", 8.43, 12)
-    retrieve_all_transactions()
+    printTransactionsWithAllowance()
     print(f"allowance 1 {getAllowanceOnDate("2025-1-12")}")
     print(f"allowance 2 {getAllowanceOnDate("2025-1-13")}")
     print(f"allowance 3 {getAllowanceOnDate("2025-1-14")}")
